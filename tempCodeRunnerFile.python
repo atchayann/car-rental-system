@@ -1,0 +1,39 @@
+import cx_Oracle
+
+# Database connection function
+def connect_db():
+    try:
+        conn = cx_Oracle.connect("system", "1234", "localhost:1521/XE")
+        cursor = conn.cursor()
+        return conn, cursor
+    except cx_Oracle.DatabaseError as e:
+        print("Database connection error:", e)
+        return None, None
+
+# Function to drop tables
+def drop_tables():
+    conn, cursor = connect_db()
+    if not conn or not cursor:
+        return
+    
+    try:
+        cursor.execute("DROP TABLE InsurancePolicy CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE RentalAgreement CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE CarColors CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE Employee CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE Car CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE Customer CASCADE CONSTRAINTS")
+        cursor.execute("DROP TABLE Branch CASCADE CONSTRAINTS")
+        
+        conn.commit()
+        print("Tables dropped successfully.")
+    
+    except cx_Oracle.DatabaseError as e:
+        print("Error dropping tables:", e)
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+# Run the function to drop tables
+drop_tables()
